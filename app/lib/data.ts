@@ -4,6 +4,7 @@ import {
   CustomerField,
   CustomersTableType,
   InvoiceForm,
+  CustomerForm,
   InvoicesTable,
   LatestInvoiceRaw,
   User,
@@ -176,6 +177,27 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchCustomerById(id: string) {
+  noStore();
+  console.log(id);
+  try {
+    const data = await sql<CustomerForm>`
+      SELECT
+        id,
+        name,
+        email
+      FROM customers
+      WHERE customers.id = ${id};
+    `;
+
+    const customer = data.rows[0];
+    return customer;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch customer.');
+  }
+}
+
 export async function fetchCustomers() {
   noStore();
   try {
@@ -187,7 +209,11 @@ export async function fetchCustomers() {
       ORDER BY name ASC
     `;
 
-    const customers = data.rows;
+    const customers = data.rows.map((customer) => ({
+      ...customer,
+      name: customer.name,
+      email: customer.email
+    }));
     return customers;
   } catch (err) {
     console.error('Database Error:', err);

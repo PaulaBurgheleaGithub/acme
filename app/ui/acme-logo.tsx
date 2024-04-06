@@ -4,7 +4,7 @@ import { poppins } from '@/app/ui/fonts';
 export default function AcmeLogo() {
   return (
     <div
-      className={`${poppins.className} flex flex-row items-center leading-none text-white`}
+      className={`${poppins.className} flex flex-row items-center leading-none text-white z-10`}
     >
       <GlobeAltIcon className="h-12 w-12 rotate-[15deg]" />
       <p className="text-[44px]">Acme</p>

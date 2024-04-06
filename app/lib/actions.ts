@@ -20,8 +20,19 @@ const FormSchema = z.object({
     date: z.string(),
 });
 
+const FormSchema2 = z.object({
+    id: z.string(),
+    name: z.string({
+        invalid_type_error: 'Please enter the full customer name.'
+    }),
+    email: z.string({
+        invalid_type_error: 'Please enter an email.'
+    }),
+});
+
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateCustomer = FormSchema2.omit({ id: true });
 
 export type State = {
     errors?: {
@@ -96,6 +107,38 @@ export async function updateInvoice(
     redirect('/dashboard/invoices');
 };
 
+export async function updateCustomer(
+    id: string,
+    prevState: State,
+    formData: FormData
+) {
+    const validatedFields = UpdateCustomer.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email')
+    });
+    
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Update Invoice.',
+        };
+    }
+    const { name, email } = validatedFields.data;
+
+    try {
+        await sql`
+        UPDATE customers
+        SET name = ${name}, email = ${email}
+        WHERE id = ${id}`;
+
+    } catch (error) {
+        return { message: 'Database Error: Failed to Update Invoice'};
+    }
+    revalidatePath('/dashboard/customers');
+    redirect('/dashboard/customers');
+};
+
 export async function deleteInvoice(id: string) {
     //throw new Error('Failed to Delete Invoice');
 
@@ -105,6 +148,17 @@ export async function deleteInvoice(id: string) {
         return {message: 'Invoice Successfully Deleted!'}
     } catch (error) {
         return { message: 'Database Error: Failed to Delete Invoice'};
+    }
+};
+
+export async function deleteCustomer(id: string) {
+
+    try {
+        await sql`DELETE FROM customers WHERE id = ${id}`;
+        revalidatePath('/dashboard/customers');
+        return {message: 'Customer Successfully Deleted!'}
+    } catch (error) {
+        return { message: 'Database Error: Failed to Delete Customer'};
     }
 };
 
