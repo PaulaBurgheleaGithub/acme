@@ -97,8 +97,7 @@ export async function updateInvoice(
 ) {
     const validatedFields = UpdateInvoice.safeParse({
         customerId: formData.get('customerId'),
-        amount: formData.get('amount'),
-        status: formData.get('status'),
+        amount: formData.get('amount')
     });
     
     // If form validation fails, return errors early. Otherwise, continue.
@@ -175,7 +174,7 @@ export async function updateCustomer(
     try {
         await sql`
         UPDATE customers
-        SET name = ${name}, email = ${email}, image_url = ${image_url}
+        SET =name = ${name}, email = ${email}, image_url = ${image_url}
         WHERE id = ${id}`;
     } catch (error) {
         return { message: 'Database Error: Failed to Update Invoice'};

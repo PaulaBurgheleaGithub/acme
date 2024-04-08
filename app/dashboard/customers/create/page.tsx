@@ -12,7 +12,7 @@ export default async function Page() {
     const customers = await fetchCustomers();
     return (
         <main>
-            {/* <Breadcrumbs
+            <Breadcrumbs
                 breadcrumbs={[
                 { label: 'Customers', href: '/dashboard/customers' },
                 {
@@ -21,9 +21,9 @@ export default async function Page() {
                     active: true,
                 },
                 ]}
-            /> */}
+            />
             {/* Not happy with how I am passing props for the new customer Form, I technically need the customers to check if a customer already exists with that email */}
-            <Form customer={createCustomer}/>
+            <Form customer={customers}/>
         </main>
     );
 }

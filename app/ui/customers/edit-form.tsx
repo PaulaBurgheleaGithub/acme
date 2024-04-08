@@ -18,12 +18,12 @@ export default function EditCustomerForm({
     customer: CustomerForm;
 }) {
     const initialState = { message: null, errors: {} };
-    const updateCustomerWithId = updateCustomer.bind(null, customer.id);
+    // const updateCustomerWithId = updateCustomer.bind(null, customer.id);
     // TO DO - This is working in the dev mode, however it cannot be build
-    const [state, dispatch] = useFormState(updateCustomerWithId, initialState); 
+    // const [state, dispatch] = useFormState(updateCustomerWithId, initialState); 
 
     return (
-        <form action={dispatch}>
+        <form action={postMessage}>
             <div>
                 <div className="rounded-md bg-gray-50 p-4 md:p-6">
                     {/* Customer Name */}

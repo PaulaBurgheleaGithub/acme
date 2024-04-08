@@ -25,8 +25,9 @@ export default function Page() {
             <a href="https://nextjs.org/learn/" className="text-blue-500">
               Next.js Learn Course
             </a>
-            <p>Demo User: </p>
-            <p>Demo Password: </p>
+            <p>...with a few additional features </p>
+            {/* <p>Demo User: </p>
+            <p>Demo Password: </p> */}
           </p>
           <Link
             href="/login"
