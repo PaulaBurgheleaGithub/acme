@@ -2,11 +2,8 @@
 
 import { CustomerField, CustomerForm} from '@/app/lib/definitions';
 import {
-    CheckIcon,
-    ClockIcon,
     UserCircleIcon,
     InboxIcon,
-    UserIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';

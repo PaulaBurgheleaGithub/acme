@@ -8,6 +8,7 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { fetchInvoicesPages } from '@/app/lib/data';
 import { Suspense } from 'react';
 
+
 export const metadata: Metadata = {
     title: 'Invoices',
 };

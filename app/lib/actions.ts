@@ -26,11 +26,12 @@ const FormSchema2 = z.object({
         invalid_type_error: 'Please enter the full customer name.'
     }),
     email: z.string({
-        invalid_type_error: 'Please enter an email.'
+        invalid_type_error: 'Please enter an email address.'
     }),
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateCustomer = FormSchema2.omit({ id: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateCustomer = FormSchema2.omit({ id: true });
 
@@ -42,6 +43,16 @@ export type State = {
     };
     message?: string | null;
 };
+
+export type State2 = {
+    errors?: {
+        name?: string[];
+        email?: string[];
+    };
+    message?: string | null;
+};
+
+
 
 export async function createInvoice(prevState: State, formData: FormData) {
     const validatedFields = CreateInvoice.safeParse({
@@ -105,6 +116,33 @@ export async function updateInvoice(
     }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
+};
+
+export async function createCustomer(prevState: State2, formData: FormData) {
+    const validatedFields = CreateCustomer.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+    });
+      // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create Customer.',
+        };
+    }
+    const { name, email } = validatedFields.data;
+
+    try {
+        await sql`
+        INSERT INTO customers (name, email)
+        VALUES (${name}, ${email})
+        `;
+    } catch (error) {
+        // If a database error occurs, return a more specific error
+        return { message: 'Database Error: Failed to Create Customer'};
+    }
+    revalidatePath('/dashboard/customers');
+    redirect('/dashboard/customers');
 };
 
 export async function updateCustomer(
