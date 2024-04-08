@@ -28,12 +28,17 @@ const FormSchema2 = z.object({
     email: z.string({
         invalid_type_error: 'Please enter an email address.'
     }),
+    image_url: z.string({
+        invalid_type_error: 'Please enter a link.'
+    }),
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateCustomer = FormSchema2.omit({ id: true });
+const CreateCustomer = FormSchema2.omit({ });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateCustomer = FormSchema2.omit({ id: true });
+const UpdateCustomer = FormSchema2.omit({ id: true});
+
+
 
 export type State = {
     errors?: {
@@ -48,6 +53,7 @@ export type State2 = {
     errors?: {
         name?: string[];
         email?: string[];
+        image_url?:string[];
     };
     message?: string | null;
 };
@@ -122,6 +128,7 @@ export async function createCustomer(prevState: State2, formData: FormData) {
     const validatedFields = CreateCustomer.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
+        image_url: formData.get('image_url')
     });
       // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
@@ -130,12 +137,12 @@ export async function createCustomer(prevState: State2, formData: FormData) {
             message: 'Missing Fields. Failed to Create Customer.',
         };
     }
-    const { name, email } = validatedFields.data;
+    const { name, email, image_url } = validatedFields.data;
 
     try {
         await sql`
-        INSERT INTO customers (name, email)
-        VALUES (${name}, ${email})
+        INSERT INTO customers (name, email, image_url)
+        VALUES (${name}, ${email}, ${image_url})
         `;
     } catch (error) {
         // If a database error occurs, return a more specific error
@@ -152,7 +159,8 @@ export async function updateCustomer(
 ) {
     const validatedFields = UpdateCustomer.safeParse({
         name: formData.get('name'),
-        email: formData.get('email')
+        email: formData.get('email'),
+        image_url:formData.get('image_url')
     });
     
     // If form validation fails, return errors early. Otherwise, continue.
@@ -162,14 +170,13 @@ export async function updateCustomer(
             message: 'Missing Fields. Failed to Update Invoice.',
         };
     }
-    const { name, email } = validatedFields.data;
+    const { name, email, image_url } = validatedFields.data;
 
     try {
         await sql`
         UPDATE customers
-        SET name = ${name}, email = ${email}
+        SET name = ${name}, email = ${email}, image_url = ${image_url}
         WHERE id = ${id}`;
-
     } catch (error) {
         return { message: 'Database Error: Failed to Update Invoice'};
     }
